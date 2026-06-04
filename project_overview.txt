@@ -1,0 +1,33 @@
+Project Overview and Python Libraries Used
+
+1. Project Description:
+This project is primarily a Streamlit-based web application designed to analyze password strength. The main application file is `app.py`, which provides an interactive UI for users to input passwords and receive detailed analysis including entropy calculation, estimated crack time, and AI-generated suggestions for stronger passwords.
+
+2. Python Libraries Used:
+- streamlit: Used for building the interactive web UI.
+- numpy: Used for numerical calculations, specifically entropy calculation.
+- pandas: Used in test scripts for data manipulation and testing.
+- scikit-learn: Listed in requirements, likely for machine learning tasks (not directly seen in main app).
+- xgboost: Listed in requirements, likely for machine learning tasks (not directly seen in main app).
+- markovify: Listed in requirements, possibly for text generation or modeling (not directly seen in main app).
+- llama-api-client: Placeholder for an actual Llama API client package, presumably for AI or language model integration.
+- huggingface_hub: Used in `test_openai.py` for interacting with Hugging Face's inference API.
+
+3. Project Structure:
+- app.py: Main Streamlit application for password strength analysis.
+- test_openai.py: Script to test Hugging Face API integration.
+- test_pandas.py: Script to test pandas functionality.
+- requirements.txt: Lists all Python dependencies.
+- Dockerfile: Defines a containerized environment to run the Streamlit app.
+- .dockerignore: Docker ignore file.
+- Various text files for common passwords and word lists used by the app.
+
+4. How the Project is Built and Run:
+- The Dockerfile uses a Python 3.9 slim image.
+- It installs system dependencies and Python packages from requirements.txt.
+- The entire project is copied into the container.
+- The Streamlit app is exposed on port 8501 and run with the command:
+  `streamlit run app.py --server.address=0.0.0.0`
+- This setup allows the app to be accessed via a web browser on the container's exposed port.
+
+This overview summarizes the key libraries and structure of the project to help understand its components and setup.
