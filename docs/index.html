@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Password Strength Analyzer</title>
+  <meta name="description" content="Real-time password security analysis with entropy scoring, HaveIBeenPwned breach detection, and pattern recognition." />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Playfair+Display:wght@700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg: #080808; --surface: #111111; --border: rgba(255,255,255,0.08); --cyan: #00d4ff; --green: #22c55e; --text: #e2e8f0; --muted: #64748b; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+    header { border-bottom: 1px solid var(--border); padding: 1.25rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--muted); }
+    .hero { max-width: 900px; margin: 0 auto; padding: 6rem 2rem 4rem; }
+    .label { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; }
+    .label span { width: 2rem; height: 1px; background: var(--cyan); }
+    .label p { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--cyan); }
+    h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.1; margin-bottom: 1.5rem; }
+    h1 em { font-style: italic; color: var(--cyan); }
+    .tagline { color: var(--muted); font-size: 1.05rem; line-height: 1.7; max-width: 600px; margin-bottom: 3rem; }
+    .privacy-pill { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25); border-radius: 999px; padding: 0.4rem 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #86efac; margin-bottom: 3rem; }
+    .cta { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 5rem; }
+    .btn-primary { padding: 0.85rem 2rem; background: var(--cyan); color: #080808; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-outline { padding: 0.85rem 2rem; border: 1px solid rgba(255,255,255,0.15); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none; }
+    .section { max-width: 900px; margin: 0 auto; padding: 0 2rem 5rem; }
+    .section-title { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--cyan); margin-bottom: 1.5rem; }
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+    .feature { background: var(--surface); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.25rem; }
+    .feature h3 { font-size: 0.875rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
+    .feature p { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+    .score-demo { background: var(--surface); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 3rem; }
+    .score-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .score-label { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--muted); }
+    .score-val { font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; font-weight: 700; }
+    .bar-bg { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; margin-bottom: 1.25rem; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 3px; }
+    .code-block { background: #0d0d0d; border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #94a3b8; line-height: 2; }
+    .code-block .cmd { color: var(--cyan); }
+    footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="logo">davis-asish / password-strength-analyzer</span>
+    <a href="https://github.com/davis-asish/password-strength-analyzer" style="font-family:monospace;font-size:0.75rem;color:var(--muted);text-decoration:none;">⌥ View on GitHub</a>
+  </header>
+
+  <div class="hero">
+    <div class="label"><span></span><p>Security · Python · Streamlit</p></div>
+    <h1>Password<br/><em>Strength Analyzer</em></h1>
+    <p class="tagline">Real-time password security analysis with information-theoretic entropy scoring, live breach detection via HaveIBeenPwned, and keyboard-walk pattern recognition. Your password is never stored or transmitted.</p>
+    <div class="privacy-pill">🔒 Zero data exposure — k-anonymity SHA-1 breach check</div>
+    <div class="cta">
+      <a href="https://github.com/davis-asish/password-strength-analyzer" class="btn-primary">View Source Code</a>
+      <a href="https://github.com/davis-asish/password-strength-analyzer#readme" class="btn-outline">Setup Guide</a>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">Strength Score Demo</p>
+    <div class="score-demo">
+      <div class="score-row"><span class="score-label">password123</span><span class="score-val" style="color:#ef4444">Very Weak · 1.5/10</span></div>
+      <div class="bar-bg"><div class="bar-fill" style="width:15%;background:#ef4444"></div></div>
+      <div class="score-row"><span class="score-label">Sunshine2024!</span><span class="score-val" style="color:#eab308">Fair · 5.5/10</span></div>
+      <div class="bar-bg"><div class="bar-fill" style="width:55%;background:#eab308"></div></div>
+      <div class="score-row"><span class="score-label">SwiftNexus47@</span><span class="score-val" style="color:#22c55e">Strong · 8.5/10</span></div>
+      <div class="bar-bg"><div class="bar-fill" style="width:85%;background:#22c55e"></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">Features</p>
+    <div class="features">
+      <div class="feature"><h3>📐 Entropy Scoring</h3><p>Information-theoretic strength based on accurate charset sizing (lowercase 26, uppercase 26, digits 10, symbols 32) × password length.</p></div>
+      <div class="feature"><h3>🔍 Breach Detection</h3><p>HaveIBeenPwned k-anonymity — only the first 5 SHA-1 characters are sent. Your actual password never leaves your machine.</p></div>
+      <div class="feature"><h3>⌨️ Pattern Detection</h3><p>Keyboard walks (qwerty, 1234), repeated characters, and leet-speak substitutions (p@55w0rd) are all detected and penalised.</p></div>
+      <div class="feature"><h3>🔑 Password Generator</h3><p>Memorable passphrase, high-entropy random (20 chars), and alphanumeric-only (22 chars) alternatives generated locally.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">Quick Start</p>
+    <div class="code-block">
+      <span class="cmd">$</span> git clone https://github.com/davis-asish/password-strength-analyzer.git<br/>
+      <span class="cmd">$</span> cd password-strength-analyzer<br/>
+      <span class="cmd">$</span> pip install -r requirements.txt<br/>
+      <span class="cmd">$</span> streamlit run app.py<br/>
+      <br/>
+      # Open http://localhost:8501
+    </div>
+  </div>
+
+  <footer>© 2025 Davis Asish · MIT License</footer>
+</body>
+</html>
